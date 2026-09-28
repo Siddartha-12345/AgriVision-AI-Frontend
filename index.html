@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AgriVision AI</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header>
+        <h1>🌱 AgriVision AI</h1>
+
+        <p>
+            AI-Based Weed Detection and Classification
+            for Precision Agriculture
+        </p>
+    </header>
+
+
+    <!-- UPLOAD SECTION -->
+    <section class="upload-section">
+
+        <h2>📷 Upload Crop Field Image</h2>
+
+        <p>
+            Upload a crop field image to detect crops
+            and weeds using Artificial Intelligence.
+        </p>
+
+        <input
+            type="file"
+            id="imageInput"
+            accept="image/png, image/jpeg, image/jpg"
+        >
+
+        <p id="fileName">
+            No image selected
+        </p>
+
+        <img
+            id="previewImage"
+            src=""
+            alt="Selected crop field image"
+            style="display:none;"
+        >
+
+        <br>
+
+        <button id="analyzeBtn">
+            🔍 Analyze Image
+        </button>
+
+        <p id="loading" class="hidden">
+            ⏳ Analyzing image with AI...
+        </p>
+
+    </section>
+
+
+    <!-- RESULTS SECTION -->
+    <section id="resultsSection" class="hidden">
+
+        <h2>📊 Analysis Results</h2>
+
+        <div class="results-grid">
+
+            <div class="result-card">
+                <h3>🌾 Crop Count</h3>
+                <p id="cropCount">0</p>
+            </div>
+
+            <div class="result-card">
+                <h3>🌿 Weed Count</h3>
+                <p id="weedCount">0</p>
+            </div>
+
+            <div class="result-card">
+                <h3>📈 Weed Density</h3>
+                <p id="weedDensity">0%</p>
+            </div>
+
+            <div class="result-card">
+                <h3>⚠️ Severity</h3>
+                <p id="severity">-</p>
+            </div>
+
+        </div>
+
+
+        <!-- AI DETECTION -->
+        <div class="detection-result">
+
+            <h2>🤖 AI Detection Result</h2>
+
+            <p>
+                Detected crops and weeds are highlighted
+                using AI-generated bounding boxes.
+            </p>
+
+            <img
+                id="detectedImage"
+                src=""
+                alt="AI detected crops and weeds"
+            >
+
+        </div>
+
+
+        <!-- HOTSPOT -->
+        <div class="hotspot-section">
+
+            <h2>🌿 Weed Hotspot Analysis</h2>
+
+            <p>
+                This analysis shows where detected weeds
+                are concentrated within the field image.
+            </p>
+
+            <div class="hotspot-grid">
+
+                <div class="hotspot-card">
+                    <h3>🔴 High Weed Area</h3>
+                    <p id="highArea">0</p>
+                </div>
+
+                <div class="hotspot-card">
+                    <h3>🟡 Medium Weed Area</h3>
+                    <p id="mediumArea">0</p>
+                </div>
+
+                <div class="hotspot-card">
+                    <h3>🟢 Low Weed Area</h3>
+                    <p id="lowArea">0</p>
+                </div>
+
+            </div>
+
+            <p id="hotspotMessage">
+                Hotspot analysis will appear here.
+            </p>
+
+        </div>
+
+
+        <!-- CHART -->
+        <div class="chart-section">
+
+            <h2>📊 Field Analysis Overview</h2>
+
+            <p>
+                Visual comparison of detected crops and weeds
+                in the uploaded field image.
+            </p>
+
+            <canvas id="fieldChart"></canvas>
+
+        </div>
+
+
+        <!-- AI ASSISTANT -->
+        <div class="ai-assistant">
+
+            <h2>🌱 Ask AgriVision AI</h2>
+
+            <p>
+                Ask questions about your crop field analysis
+                and get simple farmer-friendly suggestions.
+            </p>
+
+            <input
+                type="text"
+                id="aiQuestion"
+                placeholder="Example: Why is my weed density high?"
+            >
+
+            <button id="askAiBtn">
+                🤖 Ask AI
+            </button>
+
+            <div
+                id="aiResponse"
+                class="ai-response"
+            >
+
+                <strong>🤖 AgriVision AI:</strong>
+
+                <p>
+                    Ask a question about your field analysis
+                    to get a suggestion.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- BEFORE AND AFTER COMPARISON -->
+    <section class="comparison-section">
+
+        <div class="comparison-header">
+
+            <div>
+
+                <h2>🔄 Before & After Comparison</h2>
+
+                <p>
+                    Compare two crop field images to monitor
+                    changes in weed growth.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="comparison-upload-grid">
+
+            <!-- BEFORE -->
+            <div class="comparison-upload-card">
+
+                <h3>📷 Before Image</h3>
+
+                <input
+                    type="file"
+                    id="beforeImageInput"
+                    accept="image/png, image/jpeg, image/jpg"
+                >
+
+                <div
+                    id="beforePreview"
+                    class="comparison-preview"
+                >
+                    <span>
+                        Choose before image
+                    </span>
+                </div>
+
+            </div>
+
+
+            <!-- AFTER -->
+            <div class="comparison-upload-card">
+
+                <h3>📷 After Image</h3>
+
+                <input
+                    type="file"
+                    id="afterImageInput"
+                    accept="image/png, image/jpeg, image/jpg"
+                >
+
+                <div
+                    id="afterPreview"
+                    class="comparison-preview"
+                >
+                    <span>
+                        Choose after image
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button id="compareImagesBtn">
+            🔄 Compare Images
+        </button>
+
+
+        <p
+            id="comparisonLoading"
+            class="hidden"
+        >
+            ⏳ Analyzing both images...
+        </p>
+
+
+        <!-- COMPARISON RESULTS -->
+        <div
+            id="comparisonResults"
+            class="comparison-results hidden"
+        >
+
+            <div class="comparison-result-grid">
+
+                <div class="comparison-result-card">
+
+                    <h3>🌿 Weed Count</h3>
+
+                    <p id="weedCountChange">
+                        -
+                    </p>
+
+                </div>
+
+
+                <div class="comparison-result-card">
+
+                    <h3>📈 Weed Density</h3>
+
+                    <p id="weedDensityChange">
+                        -
+                    </p>
+
+                </div>
+
+
+                <div class="comparison-result-card">
+
+                    <h3>⚠️ Severity</h3>
+
+                    <p id="severityChange">
+                        -
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="comparisonMessage"
+                class="comparison-message"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- DETECTION HISTORY -->
+    <section class="history-section">
+
+        <div class="history-header">
+
+            <div>
+
+                <h2>📜 Detection History</h2>
+
+                <p>
+                    View previous crop field analysis results.
+                </p>
+
+            </div>
+
+            <button id="refreshHistoryBtn">
+                🔄 Refresh
+            </button>
+
+        </div>
+
+
+        <div
+            id="historyLoading"
+            class="history-message"
+        >
+            Loading detection history...
+        </div>
+
+
+        <div
+            id="historyEmpty"
+            class="history-message hidden"
+        >
+            No detection history available yet.
+        </div>
+
+
+        <div
+            id="historyTableContainer"
+            class="history-table-container hidden"
+        >
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Image</th>
+
+                        <th>Date & Time</th>
+
+                        <th>🌾 Crops</th>
+
+                        <th>🌿 Weeds</th>
+
+                        <th>📈 Density</th>
+
+                        <th>⚠️ Severity</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="historyTableBody"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<!-- MAIN SCRIPT -->
+<script src="script.js?v=4"></script>
+
+</body>
+
+</html>
