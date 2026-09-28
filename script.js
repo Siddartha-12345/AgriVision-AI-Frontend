@@ -476,8 +476,8 @@ function updateFieldChart() {
                 data: {
 
                     labels: [
-                        "Crops",
-                        "Weeds"
+                        "🌾 Crop",
+                        "🌿 Weed"
                     ],
 
                     datasets: [
@@ -495,7 +495,33 @@ function updateFieldChart() {
 
                             ],
 
-                            borderWidth: 1
+                            backgroundColor: [
+
+                                "#22a447",
+
+                                "#e34b4b"
+
+                            ],
+
+                            borderColor: [
+
+                                "#176b34",
+
+                                "#b52b2b"
+
+                            ],
+
+                            borderWidth: 2,
+
+                            borderRadius: 8,
+
+                            hoverBackgroundColor: [
+
+                                "#2fbd59",
+
+                                "#ef6262"
+
+                            ]
 
                         }
 
@@ -513,7 +539,23 @@ function updateFieldChart() {
 
                         legend: {
 
-                            display: true
+                            display: true,
+
+                            labels: {
+
+                                usePointStyle: true,
+
+                                padding: 18,
+
+                                font: {
+
+                                    size: 13,
+
+                                    weight: "600"
+
+                                }
+
+                            }
 
                         },
 
@@ -522,7 +564,23 @@ function updateFieldChart() {
                             display: true,
 
                             text:
-                                "Crop vs Weed Detection"
+                                "🌱 Crop vs Weed Detection",
+
+                            font: {
+
+                                size: 17,
+
+                                weight: "700"
+
+                            },
+
+                            padding: {
+
+                                top: 10,
+
+                                bottom: 20
+
+                            }
 
                         }
 
@@ -534,12 +592,25 @@ function updateFieldChart() {
 
                             beginAtZero: true,
 
+                            ticks: {
+
+                                precision: 0
+
+                            },
+
                             title: {
 
                                 display: true,
 
                                 text:
                                     "Number of Detected Objects"
+
+                            },
+
+                            grid: {
+
+                                color:
+                                    "rgba(0,0,0,0.08)"
 
                             }
 
@@ -553,6 +624,12 @@ function updateFieldChart() {
 
                                 text:
                                     "Category"
+
+                            },
+
+                            grid: {
+
+                                display: false
 
                             }
 
@@ -621,7 +698,7 @@ if (analyzeBtn) {
 
                 const response =
                     await fetch(
-                        "http://127.0.0.1:5000/predict",
+                        "https://agrivision-ai-backend-couz.onrender.com/predict",
                         {
 
                             method: "POST",
@@ -694,7 +771,7 @@ if (analyzeBtn) {
                 if (data.detected_image) {
 
                     detectedImage.src =
-                        "http://127.0.0.1:5000" +
+                        "https://agrivision-ai-backend-couz.onrender.com/" +
                         data.detected_image;
 
                 }
@@ -1020,18 +1097,18 @@ function generateFarmerResponse(question) {
     if (
         q.includes("weed density") ||
         q.includes("density") ||
-        q.includes("percentage") ||
-        q.includes("percent")
+        q.includes("percentage of weed") ||
+        q.includes("weed percentage")
     ) {
 
         return `
 
-            Your detected weed density is
+            The detected weed density is
             <strong>${density}%</strong>.
 
-            This project calculates weed density using
-            detected weed objects compared with the
-            total detected crop and weed objects.
+            This value represents the percentage
+            of detected weed objects relative to
+            the total detected crop and weed objects.
 
         `;
 
@@ -1045,82 +1122,32 @@ function generateFarmerResponse(question) {
     if (
         q.includes("severity") ||
         q.includes("serious") ||
-        q.includes("risk") ||
-        q.includes("danger")
+        q.includes("seriousness") ||
+        q.includes("level")
     ) {
 
         return `
 
-            The current field severity is
+            The current weed infestation severity
+            is classified as
             <strong>${level}</strong>.
 
-            Project-defined thresholds are:
+            In this project:
 
-            Low: below 5%
+            <br><br>
 
-            Medium: 5% to 20%
+            🟢 <strong>Low</strong>:
+            weed density below 5%.
 
-            High: above 20%
+            <br>
 
-        `;
+            🟡 <strong>Medium</strong>:
+            weed density from 5% to 20%.
 
-    }
+            <br>
 
-
-    // ======================================
-    // WHY WEED DENSITY
-    // ======================================
-
-    if (
-        q.includes("why") &&
-        (
-            q.includes("weed") ||
-            q.includes("density")
-        )
-    ) {
-
-        if (density > 20) {
-
-            return `
-
-                The field shows a relatively high
-                detected weed density of
-                <strong>${density}%</strong>.
-
-                The AI detected
-                <strong>${weeds}</strong> weed objects.
-
-                The affected areas should be inspected
-                and monitored closely.
-
-            `;
-
-        }
-
-
-        if (density >= 5) {
-
-            return `
-
-                The field currently has a detected
-                weed density of
-                <strong>${density}%</strong>.
-
-                Regular monitoring can help identify
-                whether weed growth is increasing.
-
-            `;
-
-        }
-
-
-        return `
-
-            The detected weed density is relatively
-            low at <strong>${density}%</strong>.
-
-            Continue regular field monitoring for
-            new weed growth.
+            🔴 <strong>High</strong>:
+            weed density above 20%.
 
         `;
 
@@ -1128,30 +1155,32 @@ function generateFarmerResponse(question) {
 
 
     // ======================================
-    // WHAT SHOULD I DO
+    // RECOMMENDATION
     // ======================================
 
     if (
+        q.includes("recommend") ||
         q.includes("what should i do") ||
         q.includes("what can i do") ||
-        q.includes("what to do") ||
         q.includes("solution") ||
-        q.includes("control weed") ||
-        q.includes("control weeds")
+        q.includes("control weeds") ||
+        q.includes("manage weeds")
     ) {
 
         if (level === "High") {
 
             return `
 
-                The analysis indicates
-                <strong>High severity</strong>.
+                🔴 The field currently has
+                <strong>High</strong> weed severity.
 
-                Inspect the areas with concentrated
-                weed detections and consider appropriate
-                weed-management practices for your crop.
+                It is recommended to inspect the
+                high-concentration areas first and
+                consider appropriate weed-management
+                practices.
 
-                Continue monitoring after management.
+                Continue monitoring the field with
+                regular images.
 
             `;
 
@@ -1162,12 +1191,13 @@ function generateFarmerResponse(question) {
 
             return `
 
-                The analysis indicates
-                <strong>Medium severity</strong>.
+                🟡 The field currently has
+                <strong>Medium</strong> weed severity.
 
-                Regularly inspect the affected areas
-                and consider suitable weed-management
-                practices before weed growth increases.
+                Monitor the affected areas regularly
+                and use suitable weed-management
+                practices based on the crop and
+                local agricultural guidance.
 
             `;
 
@@ -1176,11 +1206,51 @@ function generateFarmerResponse(question) {
 
         return `
 
-            The field currently shows
-            <strong>Low severity</strong>.
+            🟢 The field currently has
+            <strong>Low</strong> weed severity.
 
-            Continue regular monitoring and check
-            for new weed growth.
+            Continue regular field monitoring so
+            weed growth can be detected early.
+
+        `;
+
+    }
+
+
+    // ======================================
+    // FIELD STATUS
+    // ======================================
+
+    if (
+        q.includes("field status") ||
+        q.includes("condition") ||
+        q.includes("field condition") ||
+        q.includes("how is my field")
+    ) {
+
+        return `
+
+            🌱 <strong>Current Field Status</strong>
+
+            <br><br>
+
+            Crop detections:
+            <strong>${crops}</strong>
+
+            <br>
+
+            Weed detections:
+            <strong>${weeds}</strong>
+
+            <br>
+
+            Weed density:
+            <strong>${density}%</strong>
+
+            <br>
+
+            Severity:
+            <strong>${level}</strong>
 
         `;
 
@@ -1194,19 +1264,24 @@ function generateFarmerResponse(question) {
     if (
         q.includes("hotspot") ||
         q.includes("where are weeds") ||
-        q.includes("where is weed") ||
-        q.includes("which area") ||
-        q.includes("affected area")
+        q.includes("weed location") ||
+        q.includes("weed area")
     ) {
 
         const high =
-            Number(highArea.textContent) || 0;
+            Number(
+                highArea?.textContent || 0
+            );
 
         const medium =
-            Number(mediumArea.textContent) || 0;
+            Number(
+                mediumArea?.textContent || 0
+            );
 
         const low =
-            Number(lowArea.textContent) || 0;
+            Number(
+                lowArea?.textContent || 0
+            );
 
 
         if (
@@ -1217,8 +1292,8 @@ function generateFarmerResponse(question) {
 
             return `
 
-                No weed hotspot was detected
-                in the current field image.
+                No weed hotspots were detected
+                in the analyzed field image.
 
             `;
 
@@ -1232,11 +1307,11 @@ function generateFarmerResponse(question) {
 
             return `
 
-                The highest detected weed concentration
-                is in the <strong>upper area</strong>
-                of the field image.
+                🌿 The highest concentration of
+                detected weeds is in the
+                <strong>upper area</strong> of the field.
 
-                Detected weeds:
+                Detected weed objects there:
                 <strong>${high}</strong>.
 
             `;
@@ -1251,11 +1326,11 @@ function generateFarmerResponse(question) {
 
             return `
 
-                The highest detected weed concentration
-                is in the <strong>middle area</strong>
-                of the field image.
+                🌿 The highest concentration of
+                detected weeds is in the
+                <strong>middle area</strong> of the field.
 
-                Detected weeds:
+                Detected weed objects there:
                 <strong>${medium}</strong>.
 
             `;
@@ -1265,11 +1340,11 @@ function generateFarmerResponse(question) {
 
         return `
 
-            The highest detected weed concentration
-            is in the <strong>lower area</strong>
-            of the field image.
+            🌿 The highest concentration of
+            detected weeds is in the
+            <strong>lower area</strong> of the field.
 
-            Detected weeds:
+            Detected weed objects there:
             <strong>${low}</strong>.
 
         `;
@@ -1278,24 +1353,26 @@ function generateFarmerResponse(question) {
 
 
     // ======================================
-    // MONITORING
+    // AI / MODEL
     // ======================================
 
     if (
-        q.includes("monitor") ||
-        q.includes("monitoring") ||
-        q.includes("check regularly") ||
-        q.includes("future")
+        q.includes("model") ||
+        q.includes("yolo") ||
+        q.includes("ai") ||
+        q.includes("how detection")
     ) {
 
         return `
 
-            Capture field images regularly from similar
-            viewpoints.
+            AgriVision AI uses a YOLO-based object
+            detection model trained to identify
+            <strong>Crop</strong> and
+            <strong>Weed</strong> objects from
+            agricultural field images.
 
-            Compare weed count, weed density, severity,
-            and hotspot locations over time to monitor
-            changes in weed growth.
+            The model provides bounding boxes,
+            confidence scores and object counts.
 
         `;
 
@@ -1303,40 +1380,70 @@ function generateFarmerResponse(question) {
 
 
     // ======================================
-    // FIELD SUMMARY
+    // CONFIDENCE
     // ======================================
 
     if (
-        q.includes("summary") ||
-        q.includes("report") ||
-        q.includes("tell me about my field") ||
-        q.includes("field status") ||
-        q.includes("field analysis")
+        q.includes("confidence") ||
+        q.includes("accurate") ||
+        q.includes("accuracy")
     ) {
 
         return `
 
-            🌱 <strong>Field Analysis Summary</strong>
+            The model produces a confidence score
+            for each detected object.
+
+            A higher confidence means the model
+            is more confident about that particular
+            detection.
+
+            Overall model performance should be
+            evaluated using metrics such as
+            Precision, Recall and mAP.
+
+        `;
+
+    }
+
+
+    // ======================================
+    // HELP
+    // ======================================
+
+    if (
+        q.includes("help") ||
+        q.includes("what can you do") ||
+        q.includes("what can i ask")
+    ) {
+
+        return `
+
+            You can ask me questions such as:
 
             <br><br>
 
-            🌾 Crop detections:
-            <strong>${crops}</strong>
+            • How many weeds are detected?
 
             <br>
 
-            🌿 Weed detections:
-            <strong>${weeds}</strong>
+            • What is the weed density?
 
             <br>
 
-            📈 Weed density:
-            <strong>${density}%</strong>
+            • What is the severity?
 
             <br>
 
-            ⚠️ Severity:
-            <strong>${level}</strong>
+            • Where are the weed hotspots?
+
+            <br>
+
+            • What should I do?
+
+            <br>
+
+            • How many crops are detected?
 
         `;
 
@@ -1344,66 +1451,24 @@ function generateFarmerResponse(question) {
 
 
     // ======================================
-    // GENERAL RESPONSE
+    // DEFAULT RESPONSE
     // ======================================
 
     return `
 
-        Based on the current analysis:
+        I can help you understand your current
+        field analysis.
 
         <br><br>
 
-        🌾 Crops detected:
-        <strong>${crops}</strong>
-
-        <br>
-
-        🌿 Weeds detected:
-        <strong>${weeds}</strong>
-
-        <br>
-
-        📈 Weed density:
-        <strong>${density}%</strong>
-
-        <br>
-
-        ⚠️ Severity:
-        <strong>${level}</strong>
-
-        <br><br>
-
-        You can ask:
-
-        <br>
-        • What is my weed count?
-
-        <br>
-        • What is my crop count?
-
-        <br>
-        • What is the weed density?
-
-        <br>
-        • What is the severity?
-
-        <br>
-        • Where is the weed hotspot?
-
-        <br>
-        • Why is my weed density high?
-
-        <br>
-        • What should I do?
-
-        <br>
-        • Give me a field summary.
+        Try asking about
+        <strong>weed count, crop count,
+        weed density, severity, hotspots,
+        recommendations, or field status.</strong>
 
     `;
 
 }
-
-
 // ==========================================
 // BEFORE / AFTER COMPARISON
 // ==========================================
@@ -1553,7 +1618,7 @@ async function analyzeComparisonImage(file) {
 
     const response =
         await fetch(
-            "http://127.0.0.1:5000/predict",
+            "https://agrivision-ai-backend-couz.onrender.com/predict",
             {
 
                 method: "POST",
@@ -2074,7 +2139,7 @@ async function loadHistory() {
 
         const response =
             await fetch(
-                "http://127.0.0.1:5000/history"
+                "https://agrivision-ai-backend-couz.onrender.com/history"
             );
 
 
@@ -2244,7 +2309,7 @@ async function deleteHistory(id) {
 
         const response =
             await fetch(
-                "http://127.0.0.1:5000/history/" +
+                "https://agrivision-ai-backend-couz.onrender.com/history/" +
                 id,
                 {
                     method: "DELETE"
